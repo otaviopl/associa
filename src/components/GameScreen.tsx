@@ -52,7 +52,6 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
   const [, setValidAssociations] = useState<string[]>([]);
   const [lastAnswer, setLastAnswer] = useState<{word: string, isValid: boolean} | null>(null);
   const [wordsFoundInCurrentTheme, setWordsFoundInCurrentTheme] = useState(0);
-  const [currentHint, setCurrentHint] = useState<string | null>(null);
   const [wordChangeKey, setWordChangeKey] = useState(0);
   const [inputFeedback, setInputFeedback] = useState<'valid' | 'invalid' | null>(null);
   const [recentAnswers, setRecentAnswers] = useState<string[]>([]);
@@ -72,28 +71,12 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
     return () => clearInterval(timer);
   }, [time, score, showResults]);
 
-  // Função para gerar uma dica fixa para o tema (apenas 1 palavra)
-  const generateHintForTheme = (themeDictionary: Set<string>) => {
-    const availableHints = Array.from(themeDictionary).filter(word => !usedWords.has(word));
-    if (availableHints.length === 0) return null;
-    const randomHint = availableHints[Math.floor(Math.random() * availableHints.length)];
-    return randomHint;
-  };
 
-  // Auto-focus input and maybe show initial hint
+  // Auto-focus input
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-    
-    // 30% de chance de mostrar dica no tema inicial
-    const shouldShowInitialHint = Math.random() < 0.3;
-    if (shouldShowInitialHint) {
-      const initialThemeDictionary = THEME_DICTIONARIES[currentWord as keyof typeof THEME_DICTIONARIES];
-      const hint = generateHintForTheme(initialThemeDictionary);
-      setCurrentHint(hint);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Função para mudar o tema quando encontrar 2-3 palavras
@@ -104,16 +87,6 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
     setWordsFoundInCurrentTheme(0);
     setWordChangeKey(prev => prev + 1); // Trigger animation
     setLastAnswer({word: `${newWord}!`, isValid: true});
-    
-    // 30% de chance de mostrar uma dica quando muda tema
-    const shouldShowHint = Math.random() < 0.3;
-    if (shouldShowHint) {
-      const newThemeDictionary = THEME_DICTIONARIES[newWord as keyof typeof THEME_DICTIONARIES];
-      const hint = generateHintForTheme(newThemeDictionary);
-      setCurrentHint(hint);
-    } else {
-      setCurrentHint(null);
-    }
     
     // Clear the feedback after 1 second (mais rápido)
     setTimeout(() => {
@@ -199,11 +172,6 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
           >
             {currentWord}
           </h1>
-          {currentHint && (
-            <div className="text-gray-400 text-xl font-medium tracking-wide">
-              💡 {currentHint}
-            </div>
-          )}
         </div>
 
         {/* 2. Campo de Input - Logo abaixo da palavra */}

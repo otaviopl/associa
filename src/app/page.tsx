@@ -1,13 +1,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GameScreen } from '@/components/GameScreen';
 import { ResultScreen } from '@/components/ResultScreen';
 
 export default function Page() {
   const [gameState, setGameState] = useState<'home' | 'game' | 'result'>('home');
   const [finalScore, setFinalScore] = useState(0);
+  const [typedText, setTypedText] = useState('');
 
   // Handlers to change game state
   const startGame = () => {
@@ -25,6 +26,51 @@ export default function Page() {
     setGameState('home');
   };
 
+  // Efeito de digitação em loop para o título
+  useEffect(() => {
+    if (gameState !== 'home') return;
+    
+    const text = 'associa';
+    let currentIndex = 0;
+    let isDeleting = false;
+    let pauseCount = 0;
+    
+    const typeInterval = setInterval(() => {
+      if (!isDeleting) {
+        // Fase de digitação
+        if (currentIndex <= text.length) {
+          setTypedText(text.slice(0, currentIndex));
+          currentIndex++;
+        } else {
+          // Pausa antes de começar a apagar
+          pauseCount++;
+          if (pauseCount >= 13) { // ~2 segundos de pausa (13 * 150ms)
+            isDeleting = true;
+            pauseCount = 0;
+          }
+        }
+      } else {
+        // Fase de apagar
+        if (currentIndex > 0) {
+          currentIndex--;
+          setTypedText(text.slice(0, currentIndex));
+        } else {
+          // Pausa antes de reiniciar o ciclo
+          pauseCount++;
+          if (pauseCount >= 5) { // ~500ms de pausa (5 * 100ms)
+            isDeleting = false;
+            currentIndex = 0;
+            pauseCount = 0;
+          }
+        }
+      }
+    }, isDeleting ? 100 : 150); // Apagar mais rápido que escrever
+
+    return () => {
+      clearInterval(typeInterval);
+    };
+  }, [gameState]);
+
   if (gameState === 'game') {
     // Pass showResults to the game screen so it can transition
     return <GameScreen showResults={showResults} />;
@@ -40,45 +86,30 @@ export default function Page() {
       {/* Speed lines background effect */}
       <div className="speed-lines"></div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-        {/* Logo/Title - Minimalista */}
-        <div className="text-center mb-20">
-          <h1 className="text-6xl md:text-7xl font-black tracking-tight text-white leading-none">
-            <div className="mb-2">associa</div>
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-8 py-16">
+        {/* Logo/Title - Mais espaçado */}
+        <div className="text-center mb-32">
+          <h1 className="text-8xl md:text-9xl lg:text-[12rem] font-black tracking-tight text-white leading-none mb-8 font-mono">
+            {typedText}
+            <span className="typing-cursor">|</span>
           </h1>
-          <div className="w-24 h-1 bg-white mx-auto mt-6 mb-8"></div>
-          <p className="text-xl text-gray-400 font-medium tracking-widest mb-12">
-            Quanto mais rápido, melhor!
-          </p>
-        </div>
-
-        <button
-          onClick={startGame}
-          className="group energy-button relative overflow-hidden bg-white text-black px-12 py-6 text-2xl font-bold tracking-wide hover:bg-gray-100 hover:scale-105 active:scale-95 active:animate-button-flash transition-all duration-150 shadow-lg hover:shadow-xl"
-        >
-          <div className="absolute inset-0 bg-black transform translate-x-full group-hover:translate-x-0 transition-transform duration-150"></div>
-          <span className="relative z-10 group-hover:text-white transition-colors duration-150">
-            COMEÇAR
-          </span>
-        </button>
-
-        {/* Minimal Instructions */}
-        <div className="mt-16 text-center max-w-md">
-          <div className="grid grid-cols-3 gap-8 text-gray-400 text-sm font-medium">
-            <div>
-              <div className="text-2xl font-black text-white mb-2">01</div>
-              <p>Palavra aparece</p>
-            </div>
-            <div>
-              <div className="text-2xl font-black text-white mb-2">02</div>
-              <p>Digite associações</p>
-            </div>
-            <div>
-              <div className="text-2xl font-black text-white mb-2">03</div>
-              <p>Tema muda</p>
-            </div>
+          <div className="w-32 h-2 bg-white mx-auto mb-12"></div>
+          
+          {/* Texto explicativo principal */}
+          <div className="max-w-4xl mx-auto mb-70">
+            <p className="text-2xl md:text-3xl lg:text-4xl text-gray-200 font-medium leading-relaxed tracking-wide">
+              Receba uma palavra, digite associações rápidas e conquiste o maior número de pontos antes que o tempo acabe.
+            </p>
           </div>
         </div>
+        {/* Botão principal - Design simples e funcional */}
+        <button
+          onClick={startGame}
+          className="bg-white text-black text-4xl md:text-5xl font-black tracking-wider px-20 py-8 rounded-2xl hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all duration-200 shadow-xl hover:shadow-2xl border-4 border-white mt-20"
+        >
+          JOGAR AGORA
+        </button>
+
       </div>
     </div>
   );

@@ -140,6 +140,18 @@ body {
   left: 100%;
 }
 
+/* Cursor de digitação customizado */
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.typing-cursor {
+  animation: cursor-blink 1s infinite;
+  color: #ffffff;
+  font-weight: 300;
+}
+
 /* Animações específicas para o jogo */
 @keyframes word-change {
   0% { 
