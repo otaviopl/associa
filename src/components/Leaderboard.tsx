@@ -48,43 +48,54 @@ export const Leaderboard = () => {
 
   if (scores.length === 0) {
     return (
-      <div className="border border-white/10 rounded-2xl bg-neutral-950/80 backdrop-blur p-8 md:p-10">
-        <h2 className="text-sm tracking-widest uppercase text-white/60 mb-6 text-center">
-          Placar de Hoje
-        </h2>
-        <div className="text-center text-white/60">
-          <div className="text-4xl mb-3 opacity-60">🎯</div>
-          <div className="text-base text-white/90 leading-tight">Nenhum score ainda</div>
-          <div className="text-xs text-white/50">Seja o primeiro a jogar!</div>
+      <div className="rounded-2xl border border-white/10 bg-neutral-950/80 backdrop-blur">
+        {/* Cabeçalho do placar */}
+        <div className="px-5 py-4 border-b border-white/10">
+          <h2 className="text-xs uppercase tracking-[0.2em] text-white/50 font-semibold text-center">
+            PLACAR DE HOJE
+          </h2>
+        </div>
+        
+        {/* Estado vazio */}
+        <div className="px-5 py-8 text-center">
+          <div className="text-4xl mb-3 opacity-40 filter grayscale">🎯</div>
+          <div className="text-sm text-white/90 leading-tight mb-1">Nenhum score ainda</div>
+          <div className="text-xs text-white/50">seja o primeiro a jogar!</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="border border-white/10 rounded-2xl bg-neutral-950/80 backdrop-blur p-8 md:p-10">
-      <h2 className="text-sm tracking-widest uppercase text-white/60 mb-6 text-center">
-        Placar de Hoje
-      </h2>
+    <div className="rounded-2xl border border-white/10 bg-neutral-950/80 backdrop-blur">
+      {/* Cabeçalho do placar */}
+      <div className="px-5 py-4 border-b border-white/10">
+        <h2 className="text-xs uppercase tracking-[0.2em] text-white/50 font-semibold text-center">
+          PLACAR DE HOJE
+        </h2>
+      </div>
       
+      {/* Lista de scores */}
       <div className="divide-y divide-white/10">
         {scores.map((entry, index) => (
           <div
             key={`${entry.nickname}-${entry.date}`}
-            className="flex items-center justify-between px-6 py-4 hover:bg-white/10 transition-all duration-200"
+            className="flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors duration-150"
           >
-            <div className="flex items-center gap-3">
-              <div className="text-base font-mono tabular-nums w-6 text-center text-white/60 opacity-60">
+            {/* Rank e nome */}
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+              <div className="font-mono tabular-nums w-6 text-center text-white/60 text-sm">
                 {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}º`}
               </div>
-              <div>
-                <div className="text-base md:text-lg text-white/90 leading-tight">{entry.nickname}</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm text-white/90 leading-tight truncate">{entry.nickname}</div>
                 <div className="text-xs text-white/50">{formatDate(entry.date)}</div>
               </div>
             </div>
             
-            <div className="text-right">
-              <div className="text-base md:text-lg font-mono tabular-nums text-white/90 leading-tight">{entry.score}</div>
+            {/* Pontuação */}
+            <div className="text-right flex-shrink-0">
+              <div className="text-sm font-mono tabular-nums text-white/90 leading-tight">{entry.score}</div>
               <div className="text-xs text-white/50">pts</div>
             </div>
           </div>

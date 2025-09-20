@@ -94,38 +94,38 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
       <div className="speed-lines"></div>
       
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-        <div className="text-center max-w-xl w-full mx-auto space-y-6">
+        <div className="max-w-xl mx-auto text-center space-y-6">
           
-          {/* 1) Score principal + Métricas */}
+          {/* 1) Score principal responsivo */}
           <div>
-            <div className="space-y-4 mb-8">
-              <div className="text-[22vw] md:text-[14vw] font-black text-white leading-none tabular-nums">
-                {score.toString().padStart(2, '0')}
-              </div>
-              <div className="h-[1px] w-28 bg-white/10 rounded-full mx-auto"></div>
-              <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold">
-                ASSOCIAÇÕES VÁLIDAS
-              </div>
+            <div className="text-[22vw] md:text-[14vw] font-black leading-none font-mono tabular-nums">
+              {score.toString().padStart(2, '0')}
             </div>
-
-            {/* Métricas secundárias */}
-            <div className="grid grid-cols-2 gap-8">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">60</div>
-                <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">SEGUNDOS</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">
-                  {score}
-                </div>
-                <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">PALAVRAS/MIN</div>
-              </div>
+            {/* Linha fina decorativa */}
+            <div className="h-[2px] w-28 bg-white/20 rounded-full mx-auto mt-4 mb-3"></div>
+            {/* Legenda */}
+            <div className="text-xs uppercase tracking-[0.3em] text-white/60 font-semibold">
+              ASSOCIAÇÕES VÁLIDAS
             </div>
           </div>
 
-          {/* 2) Mensagem de feedback */}
+          {/* 2) Métricas em grid 2 colunas */}
+          <div className="grid grid-cols-2 gap-8">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">60</div>
+              <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">SEGUNDOS</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">
+                {score}
+              </div>
+              <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">PALAVRAS/MIN</div>
+            </div>
+          </div>
+
+          {/* 3) Mensagem de feedback */}
           <div>
-            <div className="text-lg font-semibold text-white/90">
+            <div className="text-lg md:text-xl font-semibold text-white/90">
               {feedback.title}
             </div>
             <div className="text-sm text-white/60 leading-relaxed mt-2 max-w-[48ch] mx-auto">
@@ -133,15 +133,15 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
             </div>
           </div>
 
-          {/* 3) Card "Salvar no placar" */}
-          <div className="rounded-2xl border border-white/10 bg-transparent backdrop-blur px-5 py-5">
-            <div className="text-center mb-5">
-              <div className="text-xs uppercase tracking-[0.2em] text-white/70 font-semibold mb-1">SALVAR NO PLACAR</div>
-              <div className="text-sm text-white/60">Digite seu nickname para aparecer no ranking</div>
+          {/* 4) Card "Salvar no placar" */}
+          <div className="rounded-2xl border border-white/10 bg-neutral-950/80 backdrop-blur px-5 py-5">
+            <div className="text-center mb-4">
+              <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mb-1">SALVAR NO PLACAR</div>
+              <div className="text-xs text-white/50">Digite seu nickname para aparecer no ranking</div>
             </div>
             
             {error && (
-              <div className="text-red-300/80 text-xs text-center mb-4">{error}</div>
+              <div className="text-red-300/80 text-xs text-center mb-3">{error}</div>
             )}
             
             <div className="flex gap-3">
@@ -151,14 +151,14 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="nickname"
                 maxLength={12}
-                className="flex-1 bg-transparent border border-white/10 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20 placeholder-white/40 text-center"
+                className="flex-1 bg-transparent border border-white/10 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 placeholder-white/40 text-center"
                 onKeyPress={(e) => e.key === 'Enter' && saveScore()}
                 disabled={isLoading || scoreSaved}
               />
               <button
                 onClick={saveScore}
                 disabled={!nickname.trim() || nickname.trim().length < 2 || isLoading || scoreSaved}
-                className="px-6 py-3 rounded-xl border border-white/10 text-xs uppercase tracking-widest text-white/90 hover:bg-white/10 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 font-medium"
+                className="px-6 py-3 rounded-xl border border-white/10 text-xs uppercase tracking-widest text-white hover:bg-white/10 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
               >
                 {isLoading ? (
                   <div className="w-4 h-4 border border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -171,27 +171,27 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
             </div>
           </div>
 
-          {/* 4) Botões de ação principais */}
+          {/* 5) Botões de ação principais */}
           <div className="space-y-4">
-            {/* Botão Principal */}
+            {/* Botão Principal - Jogar novamente */}
             <button
               onClick={onPlayAgain}
-              className="w-full rounded-full border border-white/10 bg-white text-black py-3 text-xs uppercase tracking-widest font-medium hover:bg-white/90 active:scale-98 transition-all duration-150"
+              className="w-full rounded-full border border-white/10 bg-white text-black py-3 text-xs uppercase tracking-widest font-medium hover:shadow-lg hover:shadow-white/20 active:scale-[0.98] transition-all duration-150"
             >
               JOGAR NOVAMENTE
             </button>
             
-            {/* Botão Secundário */}
+            {/* Botão Secundário - Compartilhar */}
             <button
               onClick={shareResult}
-              className="w-full rounded-full border border-white/10 bg-transparent text-white/90 py-3 text-xs uppercase tracking-widest font-medium hover:bg-white/10 active:scale-98 transition-all duration-150"
+              className="w-full rounded-full border border-white/10 bg-transparent text-white py-3 text-xs uppercase tracking-widest font-medium hover:bg-white/10 active:scale-[0.98] transition-all duration-150"
             >
               COMPARTILHAR RESULTADO
             </button>
           </div>
 
-          {/* 5) Linha decorativa final */}
-          <hr className="h-[1px] w-32 bg-white/10 rounded-full mx-auto border-0" />
+          {/* 6) Linha decorativa final */}
+          <div className="h-[1px] w-32 bg-white/10 rounded-full mx-auto"></div>
           
         </div>
       </div>

@@ -112,7 +112,7 @@ export default function Page() {
         </button>
 
         {/* Leaderboard */}
-        <div style={{ marginTop: '120px' }} className="w-full max-w-lg">
+        <div className="w-full max-w-xl" style={{ marginTop: '120px' }}>
           <Leaderboard />
         </div>
 

@@ -1,10 +1,54 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* Design Variables */
+:root {
+  --hairline: rgba(255, 255, 255, 0.1);
+  --text-90: rgba(255, 255, 255, 0.9);
+  --text-60: rgba(255, 255, 255, 0.6);
+  --text-50: rgba(255, 255, 255, 0.5);
+  --bg-card: rgba(23, 23, 23, 0.8);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Remove autofill styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: white !important;
+  background-color: transparent !important;
+}
+
+/* Remove native styles */
+input, button {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--hairline);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-50);
 }
 
 html, body {

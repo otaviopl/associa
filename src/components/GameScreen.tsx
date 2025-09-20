@@ -44,7 +44,7 @@ interface GameScreenProps {
 }
 
 export const GameScreen = ({ showResults }: GameScreenProps) => {
-  const [time, setTime] = useState(30);
+  const [time, setTime] = useState(60);
   const [score, setScore] = useState(0);
   const [currentWord, setCurrentWord] = useState(STIMULUS_WORDS[Math.floor(Math.random() * STIMULUS_WORDS.length)]);
   const [usedWords, setUsedWords] = useState(new Set<string>());
@@ -184,7 +184,7 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="DIGITE AQUI"
-                className={`w-full bg-transparent border-b-4 border-white text-center text-3xl font-bold text-white placeholder-gray-500 focus:outline-none focus:border-gray-300 py-4 tracking-widest uppercase transition-all duration-150 ${
+                className={`w-full bg-transparent border-b-4 border-white text-center text-3xl font-bold text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 py-4 tracking-widest uppercase transition-all duration-150 ${
                   inputFeedback === 'valid' ? 'animate-input-valid' : 
                   inputFeedback === 'invalid' ? 'animate-input-invalid' : ''
                 }`}
