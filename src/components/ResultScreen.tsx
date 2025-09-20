@@ -45,58 +45,66 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
   const performance = getPerformanceData(score);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="max-w-lg w-full text-center mx-auto">
-        {/* Celebration Animation */}
-        <div className="mb-8">
-          <div className="text-8xl mb-4">
-            {performance.emoji}
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Speed lines background effect */}
+      <div className="speed-lines"></div>
+      
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+        {/* Cartão limpo, fundo preto, texto branco */}
+        <div className="text-center max-w-md w-full">
+          
+          {/* Score principal - Dominante */}
+          <div className="mb-12">
+            <div className="text-9xl font-black text-white leading-none mb-4">
+              {score.toString().padStart(2, '0')}
+            </div>
+            <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
+            <div className="text-xl text-gray-400 font-medium tracking-wide">
+              ASSOCIAÇÕES VÁLIDAS
+            </div>
           </div>
-          <h1 className="text-5xl font-bold text-white mb-2">
-            {performance.title}
-          </h1>
-          <p className="text-gray-300 text-lg">
-            {performance.message}
-          </p>
-        </div>
 
-        {/* Score Card */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-3xl p-8 border border-gray-700 mb-8">
-          <p className="text-gray-300 text-xl mb-4">Suas associações válidas:</p>
-          <div className={`text-8xl font-bold ${performance.color} mb-2`}>
-            {score}
+          {/* Estatísticas minimalistas */}
+          <div className="grid grid-cols-2 gap-8 mb-12 text-center">
+            <div>
+              <div className="text-3xl font-black text-white mb-2">60</div>
+              <div className="text-gray-500 text-sm font-medium tracking-wide">SEGUNDOS</div>
+            </div>
+            <div>
+              <div className="text-3xl font-black text-white mb-2">
+                {score > 0 ? Math.round(score * 60 / 60) : 0}
+              </div>
+              <div className="text-gray-500 text-sm font-medium tracking-wide">PALAVRAS/MIN</div>
+            </div>
           </div>
-          <div className="flex justify-center items-center gap-2 text-gray-400">
-            <span className="text-lg">🎯</span>
-            <span>palavra{score !== 1 ? 's' : ''} associada{score !== 1 ? 's' : ''}</span>
-          </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="space-y-4 mb-8">
+          {/* Performance Level */}
+          <div className="mb-12">
+            <div className="text-2xl font-bold text-white mb-2 tracking-wide">
+              {performance.title.toUpperCase()}
+            </div>
+            <div className="text-gray-400 font-medium">
+              {performance.message}
+            </div>
+          </div>
+
+          {/* Botão de ação - Único focal point */}
           <button
             onClick={onPlayAgain}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-8 rounded-2xl text-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="group relative overflow-hidden bg-white text-black px-12 py-6 text-xl font-bold tracking-wide hover:bg-gray-100 active:scale-95 transition-all duration-150 w-full"
           >
-            🎮 Jogar Novamente
+            <div className="absolute inset-0 bg-black transform translate-x-full group-hover:translate-x-0 transition-transform duration-150"></div>
+            <span className="relative z-10 group-hover:text-white transition-colors duration-150">
+              JOGAR NOVAMENTE
+            </span>
           </button>
-          
-          <div className="pt-2">
-            <p className="text-gray-400 text-sm">
-              Desafie-se a superar sua pontuação!
-            </p>
-          </div>
-        </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-gray-800 bg-opacity-30 rounded-2xl p-4">
-            <div className="text-2xl font-bold text-white">30s</div>
-            <div className="text-gray-400 text-sm">Tempo de jogo</div>
-          </div>
-          <div className="bg-gray-800 bg-opacity-30 rounded-2xl p-4">
-            <div className="text-2xl font-bold text-white">{score > 0 ? Math.round(score / 0.5) : 0}</div>
-            <div className="text-gray-400 text-sm">Palavras/min</div>
+          {/* Barra de progresso sutil */}
+          <div className="mt-12 w-full h-1 bg-gray-800 overflow-hidden">
+            <div 
+              className="h-full bg-white transition-all duration-1000"
+              style={{ width: `${Math.min((score / 20) * 100, 100)}%` }}
+            />
           </div>
         </div>
       </div>

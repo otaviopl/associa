@@ -49,7 +49,7 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
   const [currentWord, setCurrentWord] = useState(STIMULUS_WORDS[Math.floor(Math.random() * STIMULUS_WORDS.length)]);
   const [usedWords, setUsedWords] = useState(new Set<string>());
   const [inputValue, setInputValue] = useState('');
-  const [validAssociations, setValidAssociations] = useState<string[]>([]);
+  const [, setValidAssociations] = useState<string[]>([]);
   const [lastAnswer, setLastAnswer] = useState<{word: string, isValid: boolean} | null>(null);
   const [wordsFoundInCurrentTheme, setWordsFoundInCurrentTheme] = useState(0);
   const [currentHint, setCurrentHint] = useState<string | null>(null);
@@ -153,95 +153,78 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
   const timeColor = time > 30 ? 'bg-emerald-500' : time > 15 ? 'bg-yellow-500' : 'bg-red-500';
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-2xl mx-auto">
-        {/* Timer Progress Bar */}
-        <div className="mb-8">
-          <div className="bg-gray-700 rounded-full h-4 overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Speed lines background effect */}
+      <div className="speed-lines"></div>
+      
+      {/* Timer - Canto superior direito */}
+      <div className="fixed top-8 right-8 z-20">
+        <div className="text-right">
+          <div className="text-6xl font-black text-white font-mono leading-none">
+            {time.toString().padStart(2, '0')}
+          </div>
+          <div className="w-full bg-gray-800 h-1 mt-2 overflow-hidden">
             <div 
-              className={`h-full transition-all duration-1000 ${timeColor}`}
+              className={`h-full transition-all duration-1000 ease-linear ${timeColor}`}
               style={{ width: `${timeProgress}%` }}
             />
           </div>
-          <div className="text-center mt-3">
-            <span className={`text-2xl font-bold ${time <= 15 ? 'text-red-400' : 'text-white'}`}>
-              {time}s
-            </span>
-          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+        {/* Main Game - Apenas 3 elementos principais */}
+        
+        {/* 1. Palavra Estímulo - Centralizada e dominante */}
+        <div className="text-center mb-12">
+          <h1 className="text-8xl md:text-9xl font-black tracking-tight text-white leading-none mb-4 animate-fade-in">
+            {currentWord}
+          </h1>
+          {currentHint && (
+            <div className="text-gray-400 text-xl font-medium tracking-wide">
+              {currentHint}
+            </div>
+          )}
         </div>
 
-        {/* Main Game Area */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-3xl p-8 border border-gray-700">
-          {/* Current Word */}
-          <div className="text-center mb-8">
-            <p className="text-gray-300 text-lg mb-2">Digite palavras relacionadas apenas com:</p>
-            <h2 className="text-6xl font-bold text-white tracking-wider mb-4">
-              {currentWord}
-            </h2>
-            {currentHint && (
-              <div className="mb-3 text-yellow-400 text-lg">
-                💡 Dica: <span className="font-semibold">{currentHint}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Input */}
-          <form onSubmit={handleSubmit} className="mb-6">
+        {/* 2. Campo de Input - Logo abaixo da palavra */}
+        <div className="w-full max-w-2xl mb-8">
+          <form onSubmit={handleSubmit}>
             <input
               ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Digite uma associação..."
-              className="w-full bg-gray-700 border-2 border-gray-600 rounded-2xl p-4 text-xl text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-all"
+              placeholder="DIGITE AQUI"
+              className="w-full bg-transparent border-b-4 border-white text-center text-3xl font-bold text-white placeholder-gray-500 focus:outline-none focus:border-gray-300 py-4 tracking-widest uppercase transition-all duration-150"
               autoFocus
             />
           </form>
-
-          {/* Feedback */}
-          {lastAnswer && (
-            <div className={`text-center mb-4 p-3 rounded-xl ${
-              lastAnswer.isValid 
-                ? 'bg-green-800 bg-opacity-50 text-green-300' 
-                : 'bg-red-800 bg-opacity-50 text-red-300'
-            }`}>
-              <span className="font-semibold">
-                {lastAnswer.isValid ? '✅ ' : '❌ '}
-                &quot;{lastAnswer.word}&quot;
-                {lastAnswer.isValid ? ' - Ótima associação!' : ' - Inválida'}
-              </span>
-            </div>
-          )}
-
-          {/* Score */}
-          <div className="text-center mb-6">
-            <div className="bg-gray-700 bg-opacity-50 rounded-2xl p-6 inline-block">
-              <p className="text-gray-300 text-sm mb-1">Associações válidas</p>
-              <p className="text-4xl font-bold text-white">{score}</p>
-            </div>
-          </div>
-
-          {/* Valid Associations List */}
-          {validAssociations.length > 0 && (
-            <div>
-              <h3 className="text-gray-300 text-sm mb-3 text-center">Suas associações:</h3>
-              <div className="flex flex-wrap gap-2 justify-center max-h-32 overflow-y-auto">
-                {validAssociations.map((word, index) => (
-                  <span 
-                    key={index}
-                    className="bg-blue-800 bg-opacity-50 text-blue-300 px-3 py-1 rounded-full text-sm"
-                  >
-                    {word}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Instructions */}
-        <div className="mt-6 text-center text-gray-400 text-sm max-w-md mx-auto">
-          <p>💡 Digite palavras relacionadas à palavra-chave. Às vezes aparecem dicas!</p>
+        {/* 3. Feedback Visual - Minimalista */}
+        {lastAnswer && (
+          <div className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 px-8 py-4 font-bold text-xl tracking-wide transition-all duration-150 ${
+            lastAnswer.isValid 
+              ? 'bg-white text-black animate-flash' 
+              : 'bg-gray-800 text-white animate-pulse-gray'
+          }`}>
+            {lastAnswer.isValid ? `✓ ${lastAnswer.word.toUpperCase()}` : `✗ ${lastAnswer.word.toUpperCase()}`}
+          </div>
+        )}
+
+        {/* Score - Discreto no canto inferior esquerdo */}
+        <div className="fixed bottom-8 left-8 text-white font-mono">
+          <div className="text-4xl font-black">{score.toString().padStart(2, '0')}</div>
+          <div className="text-gray-500 text-sm font-medium tracking-wide">PONTOS</div>
+        </div>
+
+        {/* Progresso - Linha sutil na parte inferior */}
+        <div className="fixed bottom-0 left-0 w-full h-1 bg-gray-900">
+          <div 
+            className="h-full bg-white transition-all duration-300"
+            style={{ width: `${(score / 20) * 100}%` }}
+          />
         </div>
       </div>
     </div>

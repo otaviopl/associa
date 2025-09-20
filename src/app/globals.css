@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 * {
   box-sizing: border-box;
@@ -12,8 +13,73 @@ html, body {
 }
 
 body {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
+  background: #000000;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.4;
+}
+
+/* Animações rápidas para velocidade */
+* {
+  transition: all 150ms ease;
+}
+
+/* Efeitos de movimento sutil no background */
+.speed-lines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.03;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 50px,
+    #ffffff 50px,
+    #ffffff 52px
+  );
+  animation: speed-move 20s linear infinite;
+}
+
+@keyframes speed-move {
+  0% { transform: translateX(-100px); }
+  100% { transform: translateX(100px); }
+}
+
+/* Animações específicas para o jogo */
+@keyframes fade-in {
+  0% { 
+    opacity: 0; 
+    transform: translateX(-20px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0);
+  }
+}
+
+@keyframes flash {
+  0% { background: white; }
+  50% { background: #f0f0f0; }
+  100% { background: white; }
+}
+
+@keyframes pulse-gray {
+  0% { background: #1f2937; }
+  50% { background: #374151; }
+  100% { background: #1f2937; }
+}
+
+.animate-fade-in {
+  animation: fade-in 200ms ease-out;
+}
+
+.animate-flash {
+  animation: flash 150ms ease-out;
+}
+
+.animate-pulse-gray {
+  animation: pulse-gray 300ms ease-out;
 }

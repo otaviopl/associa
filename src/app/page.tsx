@@ -36,74 +36,48 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-4xl mx-auto text-center">
-        {/* Hero Section */}
-        <div className="mb-12">
-          <div className="text-6xl mb-6">🧠</div>
-          <h1 className="text-6xl font-bold mb-6 text-white">
-            Associação Rápida
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Speed lines background effect */}
+      <div className="speed-lines"></div>
+      
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+        {/* Logo/Title - Minimalista */}
+        <div className="text-center mb-16">
+          <h1 className="text-7xl md:text-8xl font-black tracking-tight mb-4 text-white">
+            RÁPIDA
           </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Teste sua criatividade! Digite o máximo de associações possíveis em <span className="font-bold text-blue-400">30 segundos</span>
+          <div className="w-24 h-1 bg-white mx-auto mb-6"></div>
+          <p className="text-xl text-gray-400 font-medium tracking-wide">
+            ASSOCIAÇÃO EM 60 SEGUNDOS
           </p>
         </div>
 
-        {/* Main Card */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-3xl p-8 mb-8 border border-gray-700">
-          {/* Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gray-700 bg-opacity-50 rounded-xl p-6 text-center">
-              <div className="text-3xl mb-2">⚡</div>
-              <h3 className="font-bold text-white mb-1">Rápido</h3>
-              <p className="text-gray-400 text-sm">30 segundos intensos</p>
-            </div>
-            <div className="bg-gray-700 bg-opacity-50 rounded-xl p-6 text-center">
-              <div className="text-3xl mb-2">🎯</div>
-              <h3 className="font-bold text-white mb-1">Dinâmico</h3>
-              <p className="text-gray-400 text-sm">Uma palavra por vez</p>
-            </div>
-            <div className="bg-gray-700 bg-opacity-50 rounded-xl p-6 text-center">
-              <div className="text-3xl mb-2">🏆</div>
-              <h3 className="font-bold text-white mb-1">Desafiante</h3>
-              <p className="text-gray-400 text-sm">Quantas consegue?</p>
-            </div>
-          </div>
+        {/* Single CTA Button - Focal Point */}
+        <button
+          onClick={startGame}
+          className="group relative overflow-hidden bg-white text-black px-12 py-6 text-2xl font-bold tracking-wide hover:bg-gray-100 active:scale-95 transition-all duration-150"
+        >
+          <div className="absolute inset-0 bg-black transform translate-x-full group-hover:translate-x-0 transition-transform duration-150"></div>
+          <span className="relative z-10 group-hover:text-white transition-colors duration-150">
+            COMEÇAR
+          </span>
+        </button>
 
-          {/* CTA Button */}
-          <button
-            onClick={startGame}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-8 rounded-2xl text-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            🚀 Começar Jogo
-          </button>
-        </div>
-
-        {/* Instructions */}
-        <div className="bg-gray-800 bg-opacity-30 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-white mb-4">Como Jogar:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-            <div className="flex items-start gap-3">
-              <span className="text-blue-400 font-bold">1.</span>
-              <p className="text-gray-300 text-sm">Uma palavra-tema aparecerá na tela</p>
+        {/* Minimal Instructions */}
+        <div className="mt-16 text-center max-w-md">
+          <div className="grid grid-cols-3 gap-8 text-gray-400 text-sm font-medium">
+            <div>
+              <div className="text-2xl font-black text-white mb-2">01</div>
+              <p>Palavra aparece</p>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="text-blue-400 font-bold">2.</span>
-              <p className="text-gray-300 text-sm">Digite palavras APENAS desse tema</p>
+            <div>
+              <div className="text-2xl font-black text-white mb-2">02</div>
+              <p>Digite associações</p>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="text-blue-400 font-bold">3.</span>
-              <p className="text-gray-300 text-sm">Após 2-3 palavras, tema muda automaticamente</p>
+            <div>
+              <div className="text-2xl font-black text-white mb-2">03</div>
+              <p>Tema muda</p>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="text-blue-400 font-bold">4.</span>
-              <p className="text-gray-300 text-sm">Cada associação correta vale 1 ponto</p>
-            </div>
-          </div>
-          <div className="mt-4 p-3 bg-blue-900 bg-opacity-30 rounded-lg">
-            <p className="text-blue-300 text-xs">
-              💡 <strong>Exemplo:</strong> Para "FRIO" → neve, gelo, casaco ✅ | Para "CARRO" → motor, roda, pneu ✅
-            </p>
           </div>
         </div>
       </div>
