@@ -85,20 +85,25 @@ export default function Page() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
             <div className="flex items-start gap-3">
               <span className="text-blue-400 font-bold">1.</span>
-              <p className="text-gray-300 text-sm">Uma palavra aparecerá na tela</p>
+              <p className="text-gray-300 text-sm">Uma palavra-tema aparecerá na tela</p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-blue-400 font-bold">2.</span>
-              <p className="text-gray-300 text-sm">Digite palavras relacionadas rapidamente</p>
+              <p className="text-gray-300 text-sm">Digite palavras APENAS desse tema</p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-blue-400 font-bold">3.</span>
-              <p className="text-gray-300 text-sm">Cada associação válida vale 1 ponto</p>
+              <p className="text-gray-300 text-sm">Após 2-3 palavras, tema muda automaticamente</p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-blue-400 font-bold">4.</span>
-              <p className="text-gray-300 text-sm">Tente fazer o máximo em 30 segundos!</p>
+              <p className="text-gray-300 text-sm">Cada associação correta vale 1 ponto</p>
             </div>
+          </div>
+          <div className="mt-4 p-3 bg-blue-900 bg-opacity-30 rounded-lg">
+            <p className="text-blue-300 text-xs">
+              💡 <strong>Exemplo:</strong> Para "FRIO" → neve, gelo, casaco ✅ | Para "CARRO" → motor, roda, pneu ✅
+            </p>
           </div>
         </div>
       </div>
