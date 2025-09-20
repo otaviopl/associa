@@ -29,23 +29,47 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 120%;
+  height: 120%;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: 0.04;
   background: repeating-linear-gradient(
     45deg,
     transparent,
-    transparent 50px,
-    #ffffff 50px,
-    #ffffff 52px
+    transparent 80px,
+    #ffffff 80px,
+    #ffffff 82px
   );
-  animation: speed-move 20s linear infinite;
+  animation: speed-move 15s linear infinite;
+  filter: blur(0.5px);
+}
+
+.speed-lines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 120px,
+    #ffffff 120px,
+    #ffffff 122px
+  );
+  opacity: 0.5;
+  animation: speed-move-reverse 25s linear infinite;
 }
 
 @keyframes speed-move {
-  0% { transform: translateX(-100px); }
-  100% { transform: translateX(100px); }
+  0% { transform: translateX(-200px) translateY(-100px); }
+  100% { transform: translateX(200px) translateY(100px); }
+}
+
+@keyframes speed-move-reverse {
+  0% { transform: translateX(150px) translateY(-50px); }
+  100% { transform: translateX(-150px) translateY(50px); }
 }
 
 /* Animações específicas para o jogo */
@@ -82,4 +106,106 @@ body {
 
 .animate-pulse-gray {
   animation: pulse-gray 300ms ease-out;
+}
+
+/* Animações para botões */
+@keyframes button-flash {
+  0% { background: white; box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { background: #f8f8f8; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+  100% { background: white; box-shadow: 0 0 0 rgba(255,255,255,0); }
+}
+
+.animate-button-flash {
+  animation: button-flash 200ms ease-out;
+}
+
+/* Efeito de energia no botão */
+.energy-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.energy-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.energy-button:hover::after {
+  left: 100%;
+}
+
+/* Animações específicas para o jogo */
+@keyframes word-change {
+  0% { 
+    opacity: 0; 
+    transform: translateX(-30px) scale(0.95);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes flash-behind {
+  0% { background: transparent; }
+  30% { background: rgba(255,255,255,0.1); }
+  100% { background: transparent; }
+}
+
+@keyframes input-line-grow {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@keyframes input-valid {
+  0% { background: transparent; border-color: white; }
+  50% { background: rgba(255,255,255,0.2); border-color: #10b981; }
+  100% { background: transparent; border-color: white; }
+}
+
+@keyframes input-invalid {
+  0% { background: transparent; border-color: white; }
+  50% { background: rgba(107,114,128,0.3); border-color: #6b7280; }
+  100% { background: transparent; border-color: white; }
+}
+
+@keyframes timer-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-word-change {
+  animation: word-change 200ms ease-out;
+}
+
+.animate-flash-behind {
+  animation: flash-behind 150ms ease-out;
+}
+
+.animate-input-valid {
+  animation: input-valid 200ms ease-out;
+}
+
+.animate-input-invalid {
+  animation: input-invalid 200ms ease-out;
+}
+
+.animate-timer-pulse {
+  animation: timer-pulse 500ms ease-in-out infinite;
+}
+
+.input-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.6);
+  animation: input-line-grow 0.3s ease-out;
 }

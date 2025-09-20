@@ -88,16 +88,34 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
             </div>
           </div>
 
-          {/* Botão de ação - Único focal point */}
-          <button
-            onClick={onPlayAgain}
-            className="group relative overflow-hidden bg-white text-black px-12 py-6 text-xl font-bold tracking-wide hover:bg-gray-100 active:scale-95 transition-all duration-150 w-full"
-          >
-            <div className="absolute inset-0 bg-black transform translate-x-full group-hover:translate-x-0 transition-transform duration-150"></div>
-            <span className="relative z-10 group-hover:text-white transition-colors duration-150">
-              JOGAR NOVAMENTE
-            </span>
-          </button>
+          {/* Botões de ação */}
+          <div className="space-y-4 mb-8">
+            <button
+              onClick={() => {
+                const text = `🧠 ASSOCIA RÁPIDA\n\nFiz ${score} associações em 60 segundos!\nVelocidade: ${score} palavras/min\n\nTeste sua velocidade mental!`;
+                if (navigator.share && 'share' in navigator) {
+                  navigator.share({ title: 'Associa Rápida', text });
+                } else {
+                  navigator.clipboard?.writeText(text);
+                }
+              }}
+              className="group relative overflow-hidden bg-gray-800 text-white px-8 py-4 text-lg font-bold tracking-wide hover:bg-gray-700 active:scale-95 transition-all duration-150 w-full border border-gray-700"
+            >
+              <span className="relative z-10">
+                📤 COMPARTILHAR RESULTADO
+              </span>
+            </button>
+            
+            <button
+              onClick={onPlayAgain}
+              className="group energy-button relative overflow-hidden bg-white text-black px-12 py-6 text-xl font-bold tracking-wide hover:bg-gray-100 active:scale-95 transition-all duration-150 w-full"
+            >
+              <div className="absolute inset-0 bg-black transform translate-x-full group-hover:translate-x-0 transition-transform duration-150"></div>
+              <span className="relative z-10 group-hover:text-white transition-colors duration-150">
+                JOGAR NOVAMENTE
+              </span>
+            </button>
+          </div>
 
           {/* Barra de progresso sutil */}
           <div className="mt-12 w-full h-1 bg-gray-800 overflow-hidden">
