@@ -140,6 +140,43 @@ body {
   left: 100%;
 }
 
+/* Classes personalizadas para espaçamentos da tela de resultados */
+.result-section-ultra {
+  margin-bottom: 200px;
+}
+
+.result-section-mega {
+  margin-bottom: 160px;
+}
+
+.result-section-large {
+  margin-bottom: 120px;
+}
+
+.result-section-medium {
+  margin-bottom: 80px;
+}
+
+.result-section-small {
+  margin-bottom: 60px;
+}
+
+.result-element-spacing {
+  margin-bottom: 40px;
+}
+
+.result-inner-spacing {
+  margin-bottom: 24px;
+}
+
+.result-ultra-spacing {
+  margin-bottom: 240px;
+}
+
+.result-balanced-spacing {
+  margin-bottom: 180px;
+}
+
 /* Cursor de digitação customizado */
 @keyframes cursor-blink {
   0%, 50% { opacity: 1; }

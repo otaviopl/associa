@@ -1,129 +1,198 @@
 'use client';
 
+import { useState } from 'react';
+
 interface ResultScreenProps {
   score: number;
   onPlayAgain: () => void;
 }
 
+interface ScoreEntry {
+  nickname: string;
+  score: number;
+  date: string;
+}
+
 export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
-  // Determine performance level and message
-  const getPerformanceData = (score: number) => {
+  const [nickname, setNickname] = useState('');
+  const [scoreSaved, setScoreSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const saveScore = async () => {
+    if (!nickname.trim() || nickname.trim().length < 2) {
+      setError('Nome deve ter pelo menos 2 caracteres');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const newEntry: ScoreEntry = {
+      nickname: nickname.trim(),
+      score,
+      date: new Date().toISOString()
+    };
+
+    // Simulate network delay
+    setTimeout(() => {
+      const existingScores = JSON.parse(localStorage.getItem('associa-scores') || '[]');
+      
+      const updatedScores = [...existingScores, newEntry]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+
+      localStorage.setItem('associa-scores', JSON.stringify(updatedScores));
+      setIsLoading(false);
+      setScoreSaved(true);
+      
+      // Reset after showing success
+      setTimeout(() => {
+        setScoreSaved(false);
+      }, 1500);
+    }, 800);
+  };
+
+  const shareResult = async () => {
+    const text = `🧠 ASSOCIA RÁPIDA\n\nFiz ${score} associações em 60 segundos!\nVelocidade: ${score} palavras/min\n\nTeste sua velocidade mental!`;
+    
+    if (navigator.share && 'share' in navigator) {
+      try {
+        await navigator.share({ title: 'Associa Rápida', text });
+      } catch (err) {
+        navigator.clipboard?.writeText(text);
+      }
+    } else {
+      navigator.clipboard?.writeText(text);
+    }
+  };
+
+  const getFeedbackMessage = (score: number) => {
     if (score >= 15) return {
-      emoji: '🏆',
-      title: 'Incrível!',
-      message: 'Você é um mestre das associações!',
-      color: 'text-yellow-400',
-      bgColor: 'from-yellow-500/20 to-orange-500/20',
-      borderColor: 'border-yellow-500/30'
+      title: 'INCRÍVEL!',
+      message: 'Você é um mestre das associações! Velocidade mental excepcional.'
     };
     if (score >= 10) return {
-      emoji: '🌟',
-      title: 'Muito Bom!',
-      message: 'Excelente capacidade de associação!',
-      color: 'text-blue-400',
-      bgColor: 'from-blue-500/20 to-purple-500/20',
-      borderColor: 'border-blue-500/30'
+      title: 'MUITO BOM!',
+      message: 'Excelente capacidade de associação! Continue assim.'
     };
     if (score >= 5) return {
-      emoji: '👍',
-      title: 'Bom trabalho!',
-      message: 'Continue praticando para melhorar!',
-      color: 'text-green-400',
-      bgColor: 'from-green-500/20 to-emerald-500/20',
-      borderColor: 'border-green-500/30'
+      title: 'BOM TRABALHO!',
+      message: 'Continue praticando para melhorar ainda mais sua velocidade.'
     };
     return {
-      emoji: '💪',
-      title: 'Continue tentando!',
-      message: 'A prática leva à perfeição!',
-      color: 'text-orange-400',
-      bgColor: 'from-orange-500/20 to-red-500/20',
-      borderColor: 'border-orange-500/30'
+      title: 'CONTINUE TENTANDO!',
+      message: 'A prática leva à perfeição! Tente novamente para melhorar.'
     };
   };
 
-  const performance = getPerformanceData(score);
+  const feedback = getFeedbackMessage(score);
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-150">
       {/* Speed lines background effect */}
       <div className="speed-lines"></div>
       
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-        {/* Cartão limpo, fundo preto, texto branco */}
-        <div className="text-center max-w-md w-full">
+        <div className="text-center max-w-xl w-full mx-auto space-y-6">
           
-          {/* Score principal - Dominante */}
-          <div className="mb-12">
-            <div className="text-9xl font-black text-white leading-none mb-4">
-              {score.toString().padStart(2, '0')}
-            </div>
-            <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
-            <div className="text-xl text-gray-400 font-medium tracking-wide">
-              ASSOCIAÇÕES VÁLIDAS
-            </div>
-          </div>
-
-          {/* Estatísticas minimalistas */}
-          <div className="grid grid-cols-2 gap-8 mb-12 text-center">
-            <div>
-              <div className="text-3xl font-black text-white mb-2">60</div>
-              <div className="text-gray-500 text-sm font-medium tracking-wide">SEGUNDOS</div>
-            </div>
-            <div>
-              <div className="text-3xl font-black text-white mb-2">
-                {score > 0 ? Math.round(score * 60 / 60) : 0}
+          {/* 1) Score principal + Métricas */}
+          <div>
+            <div className="space-y-4 mb-8">
+              <div className="text-[22vw] md:text-[14vw] font-black text-white leading-none tabular-nums">
+                {score.toString().padStart(2, '0')}
               </div>
-              <div className="text-gray-500 text-sm font-medium tracking-wide">PALAVRAS/MIN</div>
+              <div className="h-[1px] w-28 bg-white/10 rounded-full mx-auto"></div>
+              <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold">
+                ASSOCIAÇÕES VÁLIDAS
+              </div>
+            </div>
+
+            {/* Métricas secundárias */}
+            <div className="grid grid-cols-2 gap-8">
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">60</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">SEGUNDOS</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">
+                  {score}
+                </div>
+                <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">PALAVRAS/MIN</div>
+              </div>
             </div>
           </div>
 
-          {/* Performance Level */}
-          <div className="mb-12">
-            <div className="text-2xl font-bold text-white mb-2 tracking-wide">
-              {performance.title.toUpperCase()}
+          {/* 2) Mensagem de feedback */}
+          <div>
+            <div className="text-lg font-semibold text-white/90">
+              {feedback.title}
             </div>
-            <div className="text-gray-400 font-medium">
-              {performance.message}
+            <div className="text-sm text-white/60 leading-relaxed mt-2 max-w-[48ch] mx-auto">
+              {feedback.message}
             </div>
           </div>
 
-          {/* Botões de ação */}
-          <div className="space-y-4 mb-8">
-            <button
-              onClick={() => {
-                const text = `🧠 ASSOCIA RÁPIDA\n\nFiz ${score} associações em 60 segundos!\nVelocidade: ${score} palavras/min\n\nTeste sua velocidade mental!`;
-                if (navigator.share && 'share' in navigator) {
-                  navigator.share({ title: 'Associa Rápida', text });
-                } else {
-                  navigator.clipboard?.writeText(text);
-                }
-              }}
-              className="group relative overflow-hidden bg-gray-800 text-white px-8 py-4 text-lg font-bold tracking-wide hover:bg-gray-700 active:scale-95 transition-all duration-150 w-full border border-gray-700"
-            >
-              <span className="relative z-10">
-                📤 COMPARTILHAR RESULTADO
-              </span>
-            </button>
+          {/* 3) Card "Salvar no placar" */}
+          <div className="rounded-2xl border border-white/10 bg-transparent backdrop-blur px-5 py-5">
+            <div className="text-center mb-5">
+              <div className="text-xs uppercase tracking-[0.2em] text-white/70 font-semibold mb-1">SALVAR NO PLACAR</div>
+              <div className="text-sm text-white/60">Digite seu nickname para aparecer no ranking</div>
+            </div>
             
+            {error && (
+              <div className="text-red-300/80 text-xs text-center mb-4">{error}</div>
+            )}
+            
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="nickname"
+                maxLength={12}
+                className="flex-1 bg-transparent border border-white/10 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20 placeholder-white/40 text-center"
+                onKeyPress={(e) => e.key === 'Enter' && saveScore()}
+                disabled={isLoading || scoreSaved}
+              />
+              <button
+                onClick={saveScore}
+                disabled={!nickname.trim() || nickname.trim().length < 2 || isLoading || scoreSaved}
+                className="px-6 py-3 rounded-xl border border-white/10 text-xs uppercase tracking-widest text-white/90 hover:bg-white/10 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 font-medium"
+              >
+                {isLoading ? (
+                  <div className="w-4 h-4 border border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : scoreSaved ? (
+                  '✓'
+                ) : (
+                  'SALVAR'
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* 4) Botões de ação principais */}
+          <div className="space-y-4">
+            {/* Botão Principal */}
             <button
               onClick={onPlayAgain}
-              className="group energy-button relative overflow-hidden bg-white text-black px-12 py-6 text-xl font-bold tracking-wide hover:bg-gray-100 active:scale-95 transition-all duration-150 w-full"
+              className="w-full rounded-full border border-white/10 bg-white text-black py-3 text-xs uppercase tracking-widest font-medium hover:bg-white/90 active:scale-98 transition-all duration-150"
             >
-              <div className="absolute inset-0 bg-black transform translate-x-full group-hover:translate-x-0 transition-transform duration-150"></div>
-              <span className="relative z-10 group-hover:text-white transition-colors duration-150">
-                JOGAR NOVAMENTE
-              </span>
+              JOGAR NOVAMENTE
+            </button>
+            
+            {/* Botão Secundário */}
+            <button
+              onClick={shareResult}
+              className="w-full rounded-full border border-white/10 bg-transparent text-white/90 py-3 text-xs uppercase tracking-widest font-medium hover:bg-white/10 active:scale-98 transition-all duration-150"
+            >
+              COMPARTILHAR RESULTADO
             </button>
           </div>
 
-          {/* Barra de progresso sutil */}
-          <div className="mt-12 w-full h-1 bg-gray-800 overflow-hidden">
-            <div 
-              className="h-full bg-white transition-all duration-1000"
-              style={{ width: `${Math.min((score / 20) * 100, 100)}%` }}
-            />
-          </div>
+          {/* 5) Linha decorativa final */}
+          <hr className="h-[1px] w-32 bg-white/10 rounded-full mx-auto border-0" />
+          
         </div>
       </div>
     </div>

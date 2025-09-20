@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { GameScreen } from '@/components/GameScreen';
 import { ResultScreen } from '@/components/ResultScreen';
+import { Leaderboard } from '@/components/Leaderboard';
 
 export default function Page() {
   const [gameState, setGameState] = useState<'home' | 'game' | 'result'>('home');
@@ -110,7 +111,12 @@ export default function Page() {
           JOGAR AGORA
         </button>
 
-      </div>
+        {/* Leaderboard */}
+        <div style={{ marginTop: '120px' }} className="w-full max-w-lg">
+          <Leaderboard />
+        </div>
+
+       </div>
     </div>
   );
 }
