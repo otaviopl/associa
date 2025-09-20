@@ -34,7 +34,7 @@ interface GameScreenProps {
 export const GameScreen = ({ showResults }: GameScreenProps) => {
   const [time, setTime] = useState(30); // Reduzido para 30 segundos
   const [score, setScore] = useState(0);
-  const [currentWord, setCurrentWord] = useState(STIMULUS_WORDS[Math.floor(Math.random() * STIMULUS_WORDS.length)]);
+  const [currentWord] = useState(STIMULUS_WORDS[Math.floor(Math.random() * STIMULUS_WORDS.length)]);
   const [usedWords, setUsedWords] = useState(new Set<string>());
   const [inputValue, setInputValue] = useState('');
   const [validAssociations, setValidAssociations] = useState<string[]>([]);
@@ -137,7 +137,7 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
             }`}>
               <span className="font-semibold">
                 {lastAnswer.isValid ? '✅ ' : '❌ '}
-                "{lastAnswer.word}"
+                &quot;{lastAnswer.word}&quot;
                 {lastAnswer.isValid ? ' - Ótima associação!' : ' - Inválida ou já usada'}
               </span>
             </div>
