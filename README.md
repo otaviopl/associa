@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Associa Rápida
 
-## Getting Started
+Um jogo de associação de palavras em tempo real construído com Next.js e TypeScript.
 
-First, run the development server:
+## 🎮 Sobre o Jogo
+
+**Associa Rápida** é um jogo onde você tem 45 segundos para fazer o máximo de associações possíveis com palavras-estímulo. O jogo apresenta diferentes temas e você deve digitar palavras relacionadas o mais rápido possível.
+
+### ✨ Funcionalidades
+
+- ⏱️ **45 segundos** de jogo intenso
+- 🎯 **10 temas diferentes** (FRIO, CARRO, FLORESTA, etc.)
+- 🔊 **Efeitos sonoros** para acertos e erros  
+- 💥 **Efeitos de pressão** que aumentam a cada 10 segundos
+- 🏆 **Placar compartilhado** entre todos os jogadores
+- 📱 **Design responsivo** e moderno
+- 🔄 **Reset diário automático** do placar
+
+## 🚀 Como executar
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Instalar dependências
+pnpm install
+
+# Executar em desenvolvimento
+pnpm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) para jogar!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Tecnologias
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Next.js 15** - Framework React
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Estilização
+- **API Routes** - Backend integrado
+- **File System** - Persistência de dados
 
-## Learn More
+## 🔌 API do Placar
 
-To learn more about Next.js, take a look at the following resources:
+O jogo inclui uma API integrada para o placar compartilhado:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Endpoints disponíveis:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `GET /api/scores` - Lista os top 10 scores
+- `POST /api/scores` - Adiciona novo score
+- `GET /api/settings` - Configurações do sistema
 
-## Deploy on Vercel
+### 📁 Estrutura de dados:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```json
+{
+  "id": 1,
+  "nickname": "Jogador",
+  "score": 15,
+  "date": "2025-09-21T20:30:00.000Z"
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Deploy na Vercel
+
+```bash
+# Build local (opcional)
+pnpm run build
+
+# Deploy para produção
+vercel --prod
+```
+
+## 🎯 Regras do Jogo
+
+1. **Objetivo**: Fazer o máximo de associações válidas em 45 segundos
+2. **Temas**: 10 palavras-estímulo com 10 associações cada (100 total)
+3. **Pontuação**: 1 ponto por palavra correta
+4. **Troca de tema**: Automática após 2-3 palavras encontradas
+5. **Placar**: Resetado diariamente às 00:00
+
+## 🎨 Efeitos Especiais
+
+- **Sons**: Ding para acerto, buzz para erro
+- **Pulsação**: Flash branco a cada 10 segundos
+- **Animações**: Transições suaves e feedback visual
+- **Timer**: Mudança de cor conforme tempo restante

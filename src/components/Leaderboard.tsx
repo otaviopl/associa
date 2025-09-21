@@ -1,38 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-interface ScoreEntry {
-  nickname: string;
-  score: number;
-  date: string;
-}
+import { leaderboardService, type ScoreEntry } from '@/services/leaderboardService';
 
 export const Leaderboard = () => {
   const [scores, setScores] = useState<ScoreEntry[]>([]);
 
   useEffect(() => {
-    // Verificar se é um novo dia e resetar se necessário
-    const checkAndResetDaily = () => {
-      const today = new Date().toDateString();
-      const lastResetDate = localStorage.getItem('last-reset-date');
-      
-      if (lastResetDate !== today) {
-        // É um novo dia, resetar o placar
-        localStorage.setItem('associa-scores', '[]');
-        localStorage.setItem('last-reset-date', today);
-        setScores([]);
-      } else {
-        // Mesmo dia, carregar scores normalmente
-        const savedScores = JSON.parse(localStorage.getItem('associa-scores') || '[]');
-        setScores(savedScores);
-      }
+    const loadScores = async () => {
+      const scores = await leaderboardService.getScores();
+      setScores(scores);
     };
 
-    checkAndResetDaily();
+    loadScores();
 
-    // Verificar a cada minuto se mudou o dia
-    const interval = setInterval(checkAndResetDaily, 60000);
+    // Verificar a cada minuto se mudou o dia e recarregar scores
+    const interval = setInterval(loadScores, 60000);
     
     return () => clearInterval(interval);
   }, []);

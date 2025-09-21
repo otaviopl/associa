@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { leaderboardService, type ScoreEntry } from '@/services/leaderboardService';
 
 // Total de combinações possíveis (mesmo valor do GameScreen)
 const TOTAL_POSSIBLE_COMBINATIONS = 100;
@@ -8,12 +9,6 @@ const TOTAL_POSSIBLE_COMBINATIONS = 100;
 interface ResultScreenProps {
   score: number;
   onPlayAgain: () => void;
-}
-
-interface ScoreEntry {
-  nickname: string;
-  score: number;
-  date: string;
 }
 
 export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
@@ -31,29 +26,32 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
     
     setIsLoading(true);
     
-    const newEntry: ScoreEntry = {
+    const newEntry: Omit<ScoreEntry, 'id'> = {
       nickname: nickname.trim(),
       score,
       date: new Date().toISOString()
     };
 
-    // Simulate network delay
-    setTimeout(() => {
-      const existingScores = JSON.parse(localStorage.getItem('associa-scores') || '[]');
+    try {
+      const success = await leaderboardService.saveScore(newEntry);
       
-      const updatedScores = [...existingScores, newEntry]
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10);
-
-      localStorage.setItem('associa-scores', JSON.stringify(updatedScores));
+      if (success) {
+        setIsLoading(false);
+        setScoreSaved(true);
+        
+        // Reset after showing success
+        setTimeout(() => {
+          setScoreSaved(false);
+        }, 1500);
+      } else {
+        throw new Error('Falha ao salvar score');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar score:', error);
+      setError('Erro ao salvar. Tente novamente.');
       setIsLoading(false);
-      setScoreSaved(true);
-      
-      // Reset after showing success
-      setTimeout(() => {
-        setScoreSaved(false);
-      }, 1500);
-    }, 800);
+      setTimeout(() => setError(''), 3000);
+    }
   };
 
   const shareResult = async () => {
