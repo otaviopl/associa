@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 
+// Total de combinações possíveis (mesmo valor do GameScreen)
+const TOTAL_POSSIBLE_COMBINATIONS = 100;
+
 interface ResultScreenProps {
   score: number;
   onPlayAgain: () => void;
@@ -54,12 +57,12 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
   };
 
   const shareResult = async () => {
-    const text = `🧠 ASSOCIA RÁPIDA\n\nFiz ${score} associações em 60 segundos!\nVelocidade: ${score} palavras/min\n\nTeste sua velocidade mental!`;
+    const text = `🧠 ASSOCIA RÁPIDA\n\nFiz ${score} associações em 45 segundos!\nVelocidade: ${Math.round((score / 45) * 60)} palavras/min\n\nTeste sua velocidade mental!`;
     
     if (navigator.share && 'share' in navigator) {
       try {
         await navigator.share({ title: 'Associa Rápida', text });
-      } catch (err) {
+      } catch {
         navigator.clipboard?.writeText(text);
       }
     } else {
@@ -67,22 +70,27 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
     }
   };
 
+
   const getFeedbackMessage = (score: number) => {
+    if (score >= 20) return {
+      title: 'EXTRAORDINÁRIO! 🏆',
+      message: `Você conseguiu ${score} pontos! Você pode fazer até ${TOTAL_POSSIBLE_COMBINATIONS} pontos.`
+    };
     if (score >= 15) return {
       title: 'INCRÍVEL!',
-      message: 'Você é um mestre das associações! Velocidade mental excepcional.'
+      message: `Você é um mestre das associações! Você pode fazer até ${TOTAL_POSSIBLE_COMBINATIONS} pontos.`
     };
     if (score >= 10) return {
       title: 'MUITO BOM!',
-      message: 'Excelente capacidade de associação! Continue assim.'
+      message: `Excelente capacidade de associação! Você pode fazer até ${TOTAL_POSSIBLE_COMBINATIONS} pontos.`
     };
     if (score >= 5) return {
       title: 'BOM TRABALHO!',
-      message: 'Continue praticando para melhorar ainda mais sua velocidade.'
+      message: `Continue praticando! Você pode fazer até ${TOTAL_POSSIBLE_COMBINATIONS} pontos.`
     };
     return {
       title: 'CONTINUE TENTANDO!',
-      message: 'A prática leva à perfeição! Tente novamente para melhorar.'
+      message: `A prática leva à perfeição! Você pode fazer até ${TOTAL_POSSIBLE_COMBINATIONS} pontos.`
     };
   };
 
@@ -112,14 +120,41 @@ export const ResultScreen = ({ score, onPlayAgain }: ResultScreenProps) => {
           {/* 2) Métricas em grid 2 colunas */}
           <div className="grid grid-cols-2 gap-8">
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">60</div>
+              <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">45</div>
               <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">SEGUNDOS</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-mono tabular-nums text-white/90 leading-none">
-                {score}
+                {Math.round((score / 45) * 60)}
               </div>
               <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-2">PALAVRAS/MIN</div>
+            </div>
+          </div>
+
+          {/* 2.5) Informações sobre combinações */}
+          <div className="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-5 shadow-xl shadow-black/30">
+            <div className="text-center mb-4">
+              <div className="text-sm uppercase tracking-[0.25em] text-white/60 font-bold">📊 PROGRESSO NO DICIONÁRIO</div>
+            </div>
+            <div className="grid grid-cols-2 gap-6 text-center">
+              <div>
+                <div className="text-2xl font-black tabular-nums text-white leading-none">{score}/{TOTAL_POSSIBLE_COMBINATIONS}</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-1">PALAVRAS ENCONTRADAS</div>
+              </div>
+              <div>
+                <div className="text-2xl font-black tabular-nums text-white leading-none">{Math.round((score / TOTAL_POSSIBLE_COMBINATIONS) * 100)}%</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mt-1">DICIONÁRIO EXPLORADO</div>
+              </div>
+            </div>
+            
+            {/* Barra de progresso visual */}
+            <div className="mt-4">
+              <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-white to-white/80 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min((score / TOTAL_POSSIBLE_COMBINATIONS) * 100, 100)}%` }}
+                />
+              </div>
             </div>
           </div>
 

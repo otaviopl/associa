@@ -39,12 +39,16 @@ const THEME_DICTIONARIES = {
   ])
 };
 
+// Calcular total de combinações possíveis
+const TOTAL_POSSIBLE_COMBINATIONS = Object.values(THEME_DICTIONARIES)
+  .reduce((total, themeSet) => total + themeSet.size, 0);
+
 interface GameScreenProps {
   showResults: (score: number) => void;
 }
 
 export const GameScreen = ({ showResults }: GameScreenProps) => {
-  const [time, setTime] = useState(60);
+  const [time, setTime] = useState(45);
   const [score, setScore] = useState(0);
   const [currentWord, setCurrentWord] = useState(STIMULUS_WORDS[Math.floor(Math.random() * STIMULUS_WORDS.length)]);
   const [usedWords, setUsedWords] = useState(new Set<string>());
@@ -55,7 +59,50 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
   const [wordChangeKey, setWordChangeKey] = useState(0);
   const [inputFeedback, setInputFeedback] = useState<'valid' | 'invalid' | null>(null);
   const [recentAnswers, setRecentAnswers] = useState<string[]>([]);
+  const [isPulsing, setIsPulsing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+
+  // Sound effects functions
+  const playCorrectSound = () => {
+    // Create a short, pleasant "ding" sound for correct answers
+    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const audioContext = new AudioContextClass();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.3);
+  };
+
+  const playIncorrectSound = () => {
+    // Create a brief "buzz" sound for incorrect answers
+    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const audioContext = new AudioContextClass();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+    oscillator.type = 'sawtooth';
+    
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.2);
+  };
 
   // Main game loop timer
   useEffect(() => {
@@ -70,6 +117,21 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
 
     return () => clearInterval(timer);
   }, [time, score, showResults]);
+
+  // Pressure pulse effect - triggers every 10 seconds elapsed
+  useEffect(() => {
+    const elapsed = 45 - time; // Seconds elapsed since start
+    
+    // Trigger pulse every 10 seconds (at 10s, 20s, 30s, 40s)
+    if (elapsed > 0 && elapsed % 10 === 0) {
+      setIsPulsing(true);
+      
+      // Remove pulse effect after animation completes
+      setTimeout(() => {
+        setIsPulsing(false);
+      }, 800);
+    }
+  }, [time]);
 
 
   // Auto-focus input
@@ -106,6 +168,7 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
     // Validation - palavra deve estar no dicionário do tema atual E não ter sido usada
     if (currentThemeDictionary.has(answer) && !usedWords.has(answer)) {
       // Correct answer
+      playCorrectSound(); // Play success sound
       setScore(prev => prev + 1);
       setUsedWords(prev => new Set(prev).add(answer));
       setValidAssociations(prev => [...prev, answer]);
@@ -123,6 +186,7 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
       }
     } else {
       // Invalid answer (not in current theme dictionary or already used)
+      playIncorrectSound(); // Play error sound
       setLastAnswer({word: answer, isValid: false});
       setInputFeedback('invalid');
     }
@@ -136,14 +200,30 @@ export const GameScreen = ({ showResults }: GameScreenProps) => {
   };
 
   // Calculate time progress for visual indicator
-  const timeProgress = (time / 60) * 100;
-  const timeColor = time > 30 ? 'bg-emerald-500' : time > 15 ? 'bg-yellow-500' : 'bg-red-500';
+  const timeProgress = (time / 45) * 100;
+  const timeColor = time > 22 ? 'bg-emerald-500' : time > 11 ? 'bg-yellow-500' : 'bg-red-500';
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Speed lines background effect */}
       <div className="speed-lines"></div>
       
+      {/* Pressure pulse overlay */}
+      {isPulsing && (
+        <div className="fixed inset-0 z-50 pointer-events-none animate-pressure-pulse">
+          <div className="absolute inset-0 bg-gradient-radial from-white/20 via-white/10 to-transparent opacity-0 animate-pulse-fade"></div>
+        </div>
+      )}
+      
+      {/* Info - Canto superior esquerdo */}
+      <div className="fixed top-8 left-8 z-20">
+        <div className="text-left">
+          <div className="text-gray-400 text-sm font-medium">
+            Você pode fazer até {TOTAL_POSSIBLE_COMBINATIONS} pontos!
+          </div>
+        </div>
+      </div>
+
       {/* Timer - Canto superior direito */}
       <div className="fixed top-8 right-8 z-20">
         <div className="text-right">
